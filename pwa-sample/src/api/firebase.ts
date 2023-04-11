@@ -28,4 +28,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-getToken(messaging, { vapidKey: vapid_key });
+export const fetchToken = async (setToken: (token: string | null) => void) => {
+  try {
+    const currentToken = await getToken(messaging, { vapidKey: vapid_key });
+    if (currentToken) {
+      setToken(currentToken);
+    } else {
+      console.log(
+        "No registration token available. Request permission to generate one."
+      );
+    }
+  } catch (err) {
+    console.log("An error occurred while retrieving token. ", err);
+  }
+};
